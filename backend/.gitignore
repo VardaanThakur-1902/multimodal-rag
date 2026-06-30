@@ -1,2 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Environment
+.env
+
+# Logs
+logs/
+*.log
+
+# Uploads
 uploads/*
 !uploads/.gitkeep
+
+# Database (choose one option)
+
+# Option 1 (Recommended): Ignore runtime database
+data/database.db
+
+# Option 2: Track database only if you intentionally want sample data
+# data/database.db
+
+# ChromaDB
+chroma_db/
+
+# IDE
+.vscode/
+.idea/
