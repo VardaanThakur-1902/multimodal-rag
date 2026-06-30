@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from llm.ollama import generate_response
+from llm.ollama_client import generate_response
 
 router = APIRouter()
 
