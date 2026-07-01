@@ -1,20 +1,24 @@
 import requests
 
-from config import OLLAMA_URL, CHAT_MODEL
+from config.settings import CHAT_MODEL
+from config.settings import OLLAMA_URL
 
 
-def generate_response(prompt: str):
+class OllamaClient:
 
-    response = requests.post(
-        f"{OLLAMA_URL}/api/generate",
-        json={
-            "model": CHAT_MODEL,
-            "prompt": prompt,
-            "stream": False
-        },
-        timeout=300
-    )
+    @staticmethod
+    def generate(prompt: str) -> str:
 
-    response.raise_for_status()
+        response = requests.post(
+            f"{OLLAMA_URL}/api/generate",
+            json={
+                "model": CHAT_MODEL,
+                "prompt": prompt,
+                "stream": False,
+            },
+            timeout=300,
+        )
 
-    return response.json()["response"]
+        response.raise_for_status()
+
+        return response.json()["response"]

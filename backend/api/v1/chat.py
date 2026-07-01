@@ -1,20 +1,13 @@
 from fastapi import APIRouter
-from pydantic import BaseModel
 
-from llm.ollama_client import generate_response
+from rag.rag_service import RAGService
+from schemas.chat import ChatRequest
 
 router = APIRouter()
 
-
-class ChatRequest(BaseModel):
-    question: str
+rag_service = RAGService()
 
 
 @router.post("/")
 def chat(request: ChatRequest):
-
-    answer = generate_response(request.question)
-
-    return {
-        "answer": answer
-    }
+    return rag_service.answer(request.question)

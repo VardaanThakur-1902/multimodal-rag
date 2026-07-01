@@ -6,7 +6,7 @@ def main():
     retriever = RetrievalService()
 
     results = retriever.retrieve(
-        "What is the revenue in 2024?"
+        "What is multimodal RAG?"
     )
 
     print("=" * 80)
