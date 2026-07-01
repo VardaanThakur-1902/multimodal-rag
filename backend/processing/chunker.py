@@ -8,8 +8,6 @@ class Chunker:
 
         chunks = []
 
-        chunk_id = 1
-
         # ---------- Text ----------
 
         for page in document.pages:
@@ -19,15 +17,25 @@ class Chunker:
                 chunks.append(
 
                     Chunk(
-                        chunk_id=chunk_id,
+                        document_name=document.metadata.get(
+                            "source_file",
+                            "Unknown"
+                        ),
+
                         page_number=page.page_number,
-                        content=page.text,
+
                         chunk_type="text",
+
+                        content=page.text,
+
+                        metadata={
+                            "page": page.page_number,
+                            "type": "text",
+                        }
                     )
 
                 )
 
-                chunk_id += 1
 
         # ---------- Tables ----------
 
@@ -36,14 +44,25 @@ class Chunker:
             chunks.append(
 
                 Chunk(
-                    chunk_id=chunk_id,
+                    document_name=document.metadata.get(
+                        "source_file",
+                        "Unknown"
+                    ),
+
                     page_number=table.page_number,
-                    content=table.markdown,
+
                     chunk_type="table",
+
+                    content=table.markdown,
+
+                    metadata={
+                        "page": table.page_number,
+                        "type": "table",
+                        "rows": table.rows,
+                        "columns": table.columns,
+                    }
                 )
 
             )
-
-            chunk_id += 1
 
         return chunks

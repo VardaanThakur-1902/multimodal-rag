@@ -20,3 +20,18 @@ UPLOAD_DIR = BASE_DIR / os.getenv("UPLOAD_DIR", "uploads")
 MAX_FILE_SIZE = int(
     os.getenv("MAX_FILE_SIZE", 52428800)
 )
+
+CHROMA_PATH = BASE_DIR / os.getenv(
+    "CHROMA_PATH",
+    "chroma_db",
+)
+
+COLLECTION_NAME = os.getenv(
+    "COLLECTION_NAME",
+    "documents",
+)
+
+EMBED_MODEL = os.getenv(
+    "EMBED_MODEL",
+    "nomic-embed-text"
+)

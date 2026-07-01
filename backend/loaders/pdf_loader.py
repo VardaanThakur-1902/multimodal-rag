@@ -5,7 +5,7 @@ from processing.page_analyzer import PageAnalyzer
 from schemas.extracted_document import ExtractedDocument
 from schemas.page import PageData
 from tables.pdf_tables import PDFTableExtractor
-
+from pathlib import Path
 
 class PDFLoader(BaseLoader):
 
@@ -100,6 +100,8 @@ class PDFLoader(BaseLoader):
         # -----------------------------
         # Return Extracted Document
         # -----------------------------
+
+        metadata["source_file"] = Path(file_path).name
 
         return ExtractedDocument(
 

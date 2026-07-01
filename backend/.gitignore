@@ -1,6 +1,7 @@
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+.venv/
 venv/
 
 # Environment
@@ -10,20 +11,18 @@ venv/
 logs/
 *.log
 
-# Uploads
+# Uploaded files
 uploads/*
 !uploads/.gitkeep
 
-# Database (choose one option)
-
-# Option 1 (Recommended): Ignore runtime database
+# SQLite database
 data/database.db
 
-# Option 2: Track database only if you intentionally want sample data
-# data/database.db
-
-# ChromaDB
+# ChromaDB (will be created in Phase 5)
 chroma_db/
+
+# Test cache
+.pytest_cache/
 
 # IDE
 .vscode/
