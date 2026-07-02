@@ -1,7 +1,7 @@
 from llm.ollama_client import OllamaClient
 from rag.context_builder import ContextBuilder
 from rag.prompt_builder import PromptBuilder
-from retriever.retrieval_service import RetrievalService
+from retrieval.retrieval_service import RetrievalService
 
 
 class RAGService:
@@ -37,7 +37,7 @@ class RAGService:
         return {
             "answer": answer,
             "sources": [
-                chunk["metadata"]
+                chunk.metadata
                 for chunk in retrieved_chunks
             ],
         }

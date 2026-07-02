@@ -41,6 +41,7 @@ class ChromaManager:
             )
 
             metadata = {
+                "chunk_id": chunk.chunk_id,
                 "document_name": chunk.document_name,
                 "page": chunk.page_number,
                 "chunk_type": chunk.chunk_type,
