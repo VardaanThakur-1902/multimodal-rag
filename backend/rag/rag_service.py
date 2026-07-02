@@ -2,7 +2,7 @@ from llm.ollama_client import OllamaClient
 from rag.context_builder import ContextBuilder
 from rag.prompt_builder import PromptBuilder
 from retrieval.retrieval_service import RetrievalService
-
+from rag.citation_service import CitationService
 
 class RAGService:
 
@@ -34,10 +34,11 @@ class RAGService:
             prompt
         )
 
+        citations = CitationService.build(
+            retrieved_chunks
+        )
+
         return {
             "answer": answer,
-            "sources": [
-                chunk.metadata
-                for chunk in retrieved_chunks
-            ],
+            "sources": citations,
         }

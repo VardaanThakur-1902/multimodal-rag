@@ -38,6 +38,7 @@ const useChat = () => {
       const assistantMessage = {
         role: "assistant",
         content: res.data.answer,
+        sources: res.data.sources || [],
       };
 
       setMessages((prev) => [

@@ -21,7 +21,7 @@ class VectorSearch:
     ) -> list[RetrievalResult]:
 
         embedding = (
-            EmbeddingService.generate_text(
+            EmbeddingService.generate(
                 query
             )
         )
