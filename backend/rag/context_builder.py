@@ -1,29 +1,27 @@
-from typing import Any
+from schemas.retrieval_result import RetrievalResult
 
 
 class ContextBuilder:
 
     @staticmethod
     def build(
-        retrieved_chunks: list[dict[str, Any]]
+        chunks: list[RetrievalResult],
     ) -> str:
 
-        context_parts = []
+        context = []
 
-        for chunk in retrieved_chunks:
+        for chunk in chunks:
 
-            metadata = chunk["metadata"]
+            metadata = chunk.metadata
 
-            section = f"""
-Source: {metadata.get("document_name", "Unknown")}
-Page: {metadata.get("page", "Unknown")}
-Type: {metadata.get("chunk_type", "Unknown")}
+            context.append(
+                f"""
+Document: {metadata.get('document_name', 'Unknown')}
+Page: {metadata.get('page', 'Unknown')}
+Type: {metadata.get('chunk_type', 'text')}
 
-{chunk["content"]}
+{chunk.content}
 """
-
-            context_parts.append(
-                section.strip()
             )
 
-        return "\n\n" + "-" * 80 + "\n\n".join(context_parts)
+        return "\n\n".join(context)

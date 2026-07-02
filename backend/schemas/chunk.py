@@ -1,7 +1,7 @@
 from uuid import uuid4
+from typing import Any
 
-from pydantic import BaseModel
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 
 class Chunk(BaseModel):
@@ -18,6 +18,6 @@ class Chunk(BaseModel):
 
     content: str
 
-    metadata: dict = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict
     )

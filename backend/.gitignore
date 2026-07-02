@@ -1,29 +1,25 @@
 # Python
 __pycache__/
 *.py[cod]
-.venv/
-venv/
 
-# Environment
+# Virtual Environment
+venv/
+.venv/
+
+# Environment Variables
 .env
 
-# Logs
-logs/
-*.log
-
-# Uploaded files
-uploads/*
-!uploads/.gitkeep
-
-# SQLite database
-data/database.db
-
-# ChromaDB (will be created in Phase 5)
+# ChromaDB
 chroma_db/
 
-# Test cache
+# Uploads
+uploads/
+
+# VS Code
+.vscode/
+
+# Pytest
 .pytest_cache/
 
-# IDE
-.vscode/
-.idea/
+# Logs
+*.log
