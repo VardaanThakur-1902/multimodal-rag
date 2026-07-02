@@ -5,6 +5,9 @@ from database.models import Document
 from services.storage_service import StorageService
 from services.validation_service import ValidationService
 
+from loaders.pdf_loader import PDFLoader
+from processing.pipeline import ProcessingPipeline
+from vectordb.chroma_manager import ChromaManager
 
 class UploadService:
 
@@ -32,5 +35,26 @@ class UploadService:
         session.add(document)
         session.commit()
         session.refresh(document)
+
+        if extension == ".pdf":
+
+            pdf_path = StorageService.get_path(
+                stored_name,
+                extension,
+            )
+
+            loader = PDFLoader()
+
+            extracted_document = loader.load(
+                str(pdf_path)
+            )
+
+            chunks = ProcessingPipeline.process(
+                extracted_document
+            )
+
+            db = ChromaManager()
+
+            db.add_chunks(chunks)
 
         return document

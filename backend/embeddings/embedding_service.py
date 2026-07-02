@@ -8,11 +8,9 @@ from embeddings.ollama_embeddings import (
 class EmbeddingService:
 
     @staticmethod
-    def generate(chunk: Chunk):
+    def generate(text: str):
 
-        return OllamaEmbeddings.embed(
-            chunk.content
-        )
+        return OllamaEmbeddings.embed(text)
 
     @staticmethod
     def generate_batch(
@@ -24,15 +22,4 @@ class EmbeddingService:
             for chunk in chunks
         ]
 
-        return OllamaEmbeddings.embed_batch(
-            texts
-        )
-    
-    @staticmethod
-    def generate_text(
-        text: str,
-    ):
-
-        return OllamaEmbeddings.embed(
-            text
-        )
+        return OllamaEmbeddings.embed_batch(texts)
