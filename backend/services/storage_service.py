@@ -39,23 +39,29 @@ class StorageService:
             exist_ok=True,
         )
 
-        filename = (
-            f"{uuid4()}{extension}"
-        )
+        filename = f"{uuid4()}{extension}"
 
-        file_path = (
-            destination
-            / filename
-        )
+        file_path = destination / filename
 
-        with open(
-            file_path,
-            "wb",
-        ) as buffer:
-
+        with open(file_path, "wb") as buffer:
             shutil.copyfileobj(
                 file.file,
                 buffer,
             )
 
         return filename
+
+    @classmethod
+    def get_path(
+        cls,
+        filename: str,
+        extension: str,
+    ) -> Path:
+
+        folder = cls.FOLDER_MAP[extension]
+
+        return (
+            Path(UPLOAD_DIR)
+            / folder
+            / filename
+        )

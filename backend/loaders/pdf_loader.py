@@ -113,4 +113,6 @@ class PDFLoader(BaseLoader):
 
             metadata=metadata,
 
+            file_path=file_path,
+
         )

@@ -8,6 +8,7 @@ from embeddings.embedding_service import (
     EmbeddingService,
 )
 
+from typing import Any
 
 class ChromaManager:
 
@@ -19,7 +20,7 @@ class ChromaManager:
 
     def add_chunks(
         self,
-        chunks: list[Chunk],
+        chunks: list[Any],
     ):
 
         ids = []
@@ -34,22 +35,24 @@ class ChromaManager:
 
             ids.append(chunk.chunk_id)
 
-            documents.append(chunk.content)
+            text = getattr(chunk, "content", None)
+
+            if text is None:
+                text = chunk.caption
+
+            documents.append(text)
 
             embeddings.append(
-                EmbeddingService.generate(chunk)
+                EmbeddingService.generate(text)
             )
 
-            metadata = {
-                "chunk_id": chunk.chunk_id,
-                "document_name": chunk.document_name,
-                "page": chunk.page_number,
-                "chunk_type": chunk.chunk_type,
-            }
+            metadata = dict(chunk.metadata)
 
-            metadata.update(chunk.metadata)
+            metadata["chunk_id"] = chunk.chunk_id
 
             metadatas.append(metadata)
+
+            
 
         self.collection.add(
             ids=ids,

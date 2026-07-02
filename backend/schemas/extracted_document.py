@@ -17,3 +17,5 @@ class ExtractedDocument(BaseModel):
     images: list[Any] = []
 
     metadata: dict[str, Any] = {}
+
+    file_path: str
