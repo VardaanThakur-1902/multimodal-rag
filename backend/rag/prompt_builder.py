@@ -11,7 +11,8 @@ Rules:
    "I could not find that information in the uploaded documents."
 4. If the context contains tables, interpret them accurately.
 5. If multiple sources contain the answer, combine the information naturally.
-6. Answer clearly and concisely.
+6. Use the conversation history to understand follow-up questions.
+7. Answer clearly and concisely.
 """
 
     @classmethod
@@ -19,10 +20,28 @@ Rules:
         cls,
         question: str,
         context: str,
+        history: list | None = None,
     ) -> str:
+
+        history_text = ""
+
+        if history:
+
+            for message in history:
+
+                history_text += (
+                    f"{message['role'].capitalize()}: "
+                    f"{message['content']}\n"
+                )
 
         return f"""
 {cls.SYSTEM_PROMPT}
+
+======================
+CONVERSATION HISTORY
+======================
+
+{history_text}
 
 ======================
 CONTEXT
@@ -31,7 +50,7 @@ CONTEXT
 {context}
 
 ======================
-QUESTION
+CURRENT QUESTION
 ======================
 
 {question}
