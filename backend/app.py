@@ -8,9 +8,21 @@ from database.database import create_db
 from api.v1.upload import router as upload_router
 from api.v1.documents import router as document_router
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI(
     title="Multimodal RAG",
     version="1.0.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
