@@ -1,48 +1,19 @@
-import toast from "react-hot-toast";
 import { useRef, useState } from "react";
+import toast from "react-hot-toast";
 
 const useChat = () => {
 
   const [messages, setMessages] = useState([]);
-
   const [loading, setLoading] = useState(false);
-
-  const [sessions, setSessions] = useState([]);
-
-  const [currentSession, setCurrentSession] = useState(null);
 
   const abortController = useRef(null);
 
-  const sendMessage = async (question) => {
+  const sendMessage = async (question,sessionId) => {
 
     const userMessage = {
       role: "user",
       content: question,
     };
-
-    setSessions((prev) =>
-      prev.map((session) => {
-
-        if (session.id !== currentSession) {
-          return session;
-        }
-
-        const title =
-          session.title === "New Chat"
-            ? (
-                question.length > 30
-                  ? question.substring(0, 30) + "..."
-                  : question
-              )
-            : session.title;
-
-        return {
-          ...session,
-          title,
-        };
-
-      })
-    );
 
     setMessages((prev) => [
       ...prev,
@@ -56,21 +27,29 @@ const useChat = () => {
       abortController.current = new AbortController();
 
       const response = await fetch(
-          "http://127.0.0.1:8000/api/v1/chat/stream",
-          {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                  question,
-              }),
-              signal: abortController.current.signal,
-          }
+        "http://127.0.0.1:8000/api/v1/chat/stream",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            question,
+            session_id: sessionId,
+          }),
+          signal: abortController.current.signal,
+        }
       );
 
-      const reader = response.body.getReader();
+      if (!response.ok) {
+        throw new Error("Request failed");
+      }
 
+      if (!response.body) {
+        throw new Error("No response body");
+      }
+
+      const reader = response.body.getReader();
       const decoder = new TextDecoder();
 
       let assistantMessage = {
@@ -92,7 +71,12 @@ const useChat = () => {
 
         if (done) break;
 
-        const token = decoder.decode(value);
+        const token = decoder.decode(
+          value,
+          {
+            stream: true,
+          }
+        );
 
         assistantMessage.content += token;
 
@@ -126,85 +110,42 @@ const useChat = () => {
 
     } catch (err) {
 
-        if (err.name !== "AbortError") {
+      if (err.name !== "AbortError") {
 
-          toast.error(
-            "Unable to connect to backend."
-          );
+        toast.error(
+          "Unable to connect to backend."
+        );
 
-        }
+      }
 
-      } finally {
+    } finally {
 
-          setLoading(false);
+      setLoading(false);
 
-        }
+      abortController.current = null;
 
-      };
-
-
-  const stopGeneration = () => {
-
-        if (abortController.current) {
-            abortController.current.abort();
-        }
-
-        setLoading(false);
-    };
-
-  const createSession = () => {
-
-    const session = {
-        id: crypto.randomUUID(),
-        title: "New Chat",
-        messages: [],
-    };
-
-    setSessions(prev =>
-        prev.map(session =>
-            session.id === currentSession
-                ? {
-                      ...session,
-                      messages: [
-                          ...session.messages,
-                          userMessage,
-                      ],
-                  }
-                : session
-        )
-    );
-
-    setCurrentSession(session.id);
-
-    setMessages([]);
+    }
 
   };
 
-  const selectSession = (sessionId) => {
+  const stopGeneration = () => {
 
-    const session = sessions.find(
-        s => s.id === sessionId
-    );
+    if (abortController.current) {
 
-    if (!session) return;
+      abortController.current.abort();
 
-    setCurrentSession(sessionId);
+    }
 
-    setMessages(session.messages);
+    setLoading(false);
 
-};
+  };
 
   return {
     messages,
     loading,
-    sessions,
-    currentSession,
-    setSessions,
-    setCurrentSession,
+    setMessages,
     sendMessage,
     stopGeneration,
-    createSession,
-    selectSession,
   };
 
 };

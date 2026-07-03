@@ -2,6 +2,10 @@ from sqlmodel import SQLModel
 from sqlmodel import Session
 from sqlmodel import create_engine
 
+from database.models import Document
+from database.chat_models import ChatSession
+from database.chat_models import ChatMessage
+
 from config.settings import DATABASE_URL
 
 engine = create_engine(

@@ -10,6 +10,9 @@ from api.v1.documents import router as document_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
+from api.v1.sessions import router as sessions_router
+from api.v1.messages import router as messages_router
+
 app = FastAPI(
     title="Multimodal RAG",
     version="1.0.0",
@@ -54,4 +57,16 @@ app.include_router(
     document_router,
     prefix="/api/v1/documents",
     tags=["Documents"],
+)
+
+app.include_router(
+    sessions_router,
+    prefix="/api/v1/sessions",
+    tags=["Sessions"],
+)
+
+app.include_router(
+    messages_router,
+    prefix="/api/v1/messages",
+    tags=["Messages"],
 )
