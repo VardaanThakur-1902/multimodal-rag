@@ -64,3 +64,51 @@ class RAGService:
             "answer": answer,
             "sources": citations,
         }
+
+    def answer_stream(
+        self,
+        question: str,
+        top_k: int = 5,
+    ):
+
+        history = HistoryManager.history()
+
+        rewritten_question = QueryRewriter.rewrite(
+            question,
+            history,
+        )
+
+        retrieved_chunks = self.retriever.retrieve(
+            rewritten_question,
+            top_k,
+        )
+
+        context = ContextBuilder.build(
+            retrieved_chunks
+        )
+
+        prompt = PromptBuilder.build(
+            question=rewritten_question,
+            context=context,
+            history=history,
+        )
+
+        answer = ""
+
+        for token in OllamaClient.generate_stream(
+            prompt
+        ):
+
+            answer += token
+
+            yield token
+
+        HistoryManager.add(
+            "user",
+            question,
+        )
+
+        HistoryManager.add(
+            "assistant",
+            answer,
+        )

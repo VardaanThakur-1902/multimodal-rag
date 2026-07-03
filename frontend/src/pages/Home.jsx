@@ -4,20 +4,32 @@ import useChat from "../hooks/useChat";
 
 const Home = () => {
   const {
-    messages,
-    loading,
-    sendMessage,
-  } = useChat();
+  messages,
+  loading,
+  sendMessage,
+  stopGeneration,
+  sessions,
+  currentSession,
+  createSession,
+  setCurrentSession,
+  selectSession
+} = useChat();
 
   return (
     <div className="flex h-screen bg-neutral-900 text-white">
 
-      <Sidebar />
+      <Sidebar
+        sessions={sessions}
+        currentSession={currentSession}
+        createSession={createSession}
+        selectSession={selectSession}
+      />
 
       <ChatWindow
         messages={messages}
         loading={loading}
         sendMessage={sendMessage}
+        stopGeneration={stopGeneration}
       />
 
     </div>

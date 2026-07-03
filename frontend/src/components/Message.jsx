@@ -23,6 +23,14 @@ const Message = ({ message }) => {
           {message.content}
         </ReactMarkdown>
 
+        {
+            message.streaming && (
+                <span className="animate-pulse">
+                    ▌
+                </span>
+            )
+        }
+
         {!isUser &&
           message.sources &&
           message.sources.length > 0 && (
