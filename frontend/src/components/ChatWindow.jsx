@@ -8,6 +8,7 @@ const ChatWindow = ({
   messages,
   loading,
   sendMessage,
+  stopGeneration,
 }) => {
 
   const bottomRef = useRef(null);
@@ -51,8 +52,9 @@ const ChatWindow = ({
       </div>
 
       <ChatInput
-        sendMessage={sendMessage}
-        loading={loading}
+          sendMessage={sendMessage}
+          stopGeneration={stopGeneration}
+          loading={loading}
       />
 
     </div>

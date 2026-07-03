@@ -3,6 +3,7 @@ import { FiSend } from "react-icons/fi";
 
 const ChatInput = ({
   sendMessage,
+  stopGeneration,
   loading,
 }) => {
   const [input, setInput] = useState("");
@@ -47,6 +48,13 @@ const ChatInput = ({
           className="rounded-lg bg-blue-600 px-5 hover:bg-blue-700 disabled:opacity-50"
         >
           <FiSend />
+        </button>
+
+        <button
+            onClick={stopGeneration}
+            className="bg-red-600 px-4 py-2 rounded"
+        >
+            Stop
         </button>
 
       </div>
