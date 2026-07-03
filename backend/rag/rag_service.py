@@ -3,7 +3,7 @@ from rag.context_builder import ContextBuilder
 from rag.prompt_builder import PromptBuilder
 from retrieval.retrieval_service import RetrievalService
 from rag.citation_service import CitationService
-from memory.history_manager import HistoryManager
+from services.message_service import MessageService
 from query_rewriting.query_rewriter import QueryRewriter
 
 class RAGService:
@@ -15,10 +15,15 @@ class RAGService:
     def answer(
         self,
         question: str,
+        session_id: str,
+        session,
         top_k: int = 5,
     ):
 
-        history = HistoryManager.history()
+        history = MessageService.recent_history(
+            session,
+            session_id,
+        )
 
         rewritten_question = QueryRewriter.rewrite(
             question,
@@ -34,26 +39,35 @@ class RAGService:
             retrieved_chunks
         )
 
-        history = HistoryManager.history()
-
         prompt = PromptBuilder.build(
             question=rewritten_question,
             context=context,
             history=history,
         )
 
+        MessageService.add(
+            session=session,
+            session_id=session_id,
+            role="user",
+            content=question,
+        )
+
         answer = OllamaClient.generate(
             prompt
         )
 
-        HistoryManager.add(
-            "user",
-            question,
+        MessageService.add(
+            session=session,
+            session_id=session_id,
+            role="user",
+            content=question,
         )
 
-        HistoryManager.add(
-            "assistant",
-            answer,
+        MessageService.add(
+            session=session,
+            session_id=session_id,
+            role="assistant",
+            content=answer,
         )
 
         citations = CitationService.build(
@@ -68,10 +82,15 @@ class RAGService:
     def answer_stream(
         self,
         question: str,
+        session_id: str,
+        session,
         top_k: int = 5,
     ):
 
-        history = HistoryManager.history()
+        history = MessageService.recent_history(
+            session,
+            session_id,
+        )
 
         rewritten_question = QueryRewriter.rewrite(
             question,
@@ -98,17 +117,23 @@ class RAGService:
         for token in OllamaClient.generate_stream(
             prompt
         ):
+            
+            MessageService.add(
+                session=session,
+                session_id=session_id,
+                role="user",
+                content=question,
+            )
+
+            MessageService.add(
+                session=session,
+                session_id=session_id,
+                role="assistant",
+                content=answer,
+            )
 
             answer += token
 
             yield token
 
-        HistoryManager.add(
-            "user",
-            question,
-        )
-
-        HistoryManager.add(
-            "assistant",
-            answer,
-        )
+        
