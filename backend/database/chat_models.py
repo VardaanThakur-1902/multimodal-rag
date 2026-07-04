@@ -2,6 +2,7 @@ from datetime import datetime
 from uuid import uuid4
 
 from sqlmodel import Field, SQLModel
+from typing import Optional
 
 
 class ChatSession(SQLModel, table=True):
@@ -30,6 +31,9 @@ class ChatMessage(SQLModel, table=True):
     role: str
 
     content: str
+
+    # Store citations as JSON string
+    sources: Optional[str] = None
 
     created_at: datetime = Field(
         default_factory=datetime.utcnow,

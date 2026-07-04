@@ -5,6 +5,7 @@ from retrieval.retrieval_service import RetrievalService
 from rag.citation_service import CitationService
 from services.message_service import MessageService
 from query_rewriting.query_rewriter import QueryRewriter
+import json
 
 class RAGService:
 
@@ -56,11 +57,8 @@ class RAGService:
             prompt
         )
 
-        MessageService.add(
-            session=session,
-            session_id=session_id,
-            role="user",
-            content=question,
+        citations = CitationService.build(
+            retrieved_chunks
         )
 
         MessageService.add(
@@ -68,10 +66,7 @@ class RAGService:
             session_id=session_id,
             role="assistant",
             content=answer,
-        )
-
-        citations = CitationService.build(
-            retrieved_chunks
+            sources=json.dumps(citations),
         )
 
         return {
@@ -112,28 +107,48 @@ class RAGService:
             history=history,
         )
 
+        # Save user message once
+        MessageService.add(
+            session=session,
+            session_id=session_id,
+            role="user",
+            content=question,
+        )
+
         answer = ""
 
         for token in OllamaClient.generate_stream(
             prompt
         ):
-            
-            MessageService.add(
-                session=session,
-                session_id=session_id,
-                role="user",
-                content=question,
-            )
-
-            MessageService.add(
-                session=session,
-                session_id=session_id,
-                role="assistant",
-                content=answer,
-            )
 
             answer += token
 
-            yield token
+            yield (
+                f"event: token\n"
+                f"data: {json.dumps(token)}\n\n"
+            )
 
-        
+        # Save assistant message once
+        citations = CitationService.build(
+            retrieved_chunks
+        )
+
+        MessageService.add(
+            session=session,
+            session_id=session_id,
+            role="assistant",
+            content=answer,
+            sources=json.dumps(citations),
+        )
+
+        # Send sources event
+        yield (
+            "event: sources\n"
+            f"data: {json.dumps(citations)}\n\n"
+        )
+
+        # Tell frontend streaming is complete
+        yield (
+            "event: done\n"
+            "data: {}\n\n"
+        )

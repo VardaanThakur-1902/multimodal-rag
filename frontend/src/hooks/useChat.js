@@ -64,49 +64,57 @@ const useChat = () => {
         assistantMessage,
       ]);
 
+      let buffer = "";
+
       while (true) {
 
-        const { done, value } =
-          await reader.read();
+        const { done, value } = await reader.read();
 
         if (done) break;
 
-        const token = decoder.decode(
-          value,
-          {
-            stream: true,
+        buffer += decoder.decode(value, { stream: true });
+
+        const events = buffer.split("\n\n");
+
+        buffer = events.pop() || "";
+
+        for (const event of events) {
+
+          const lines = event.split("\n");
+
+          const eventType = lines[0].replace("event: ", "").trim();
+
+          const data = lines[1].replace("data: ", "").trim();
+
+          if (eventType === "token") {
+
+            assistantMessage.content += JSON.parse(data);
+
+          } else if (eventType === "sources") {
+
+            assistantMessage.sources = JSON.parse(data);
+
+          } else if (eventType === "done") {
+
+            assistantMessage.streaming = false;
+
           }
-        );
 
-        assistantMessage.content += token;
+          setMessages((prev) => {
 
-        setMessages((prev) => {
+            const copy = [...prev];
 
-          const copy = [...prev];
+            copy[copy.length - 1] = {
+              ...assistantMessage,
+            };
 
-          copy[copy.length - 1] = {
-            ...assistantMessage,
-          };
+            return copy;
 
-          return copy;
+          });
 
-        });
+        }
 
       }
-
-      assistantMessage.streaming = false;
-
-      setMessages((prev) => {
-
-        const copy = [...prev];
-
-        copy[copy.length - 1] = {
-          ...assistantMessage,
-        };
-
-        return copy;
-
-      });
 
     } catch (err) {
 
