@@ -2,6 +2,9 @@ import Sidebar from "../components/Sidebar";
 import ChatWindow from "../components/ChatWindow";
 import useChat from "../hooks/useChat";
 import useSessions from "../hooks/useSessions";
+import DropZone from "../components/DropZone";
+import toast from "react-hot-toast";
+import api from "../services/api";
 
 const Home = () => {
   const {
@@ -36,9 +39,58 @@ const Home = () => {
       setMessages(history);
 
   };
+
   const handleSendMessage = (question) => {
-    sendMessage(question, currentSession);
+
+      if (!currentSession) {
+
+          toast.error("Create or select a chat first.");
+
+          return;
+
+      }
+
+      sendMessage(question, currentSession);
+
   };
+
+  
+
+  const handleUpload = async (files) => {
+
+    if (!files.length) return;
+
+    const formData = new FormData();
+
+    formData.append("file", files[0]);
+
+    try {
+
+      await api.post(
+        "/api/v1/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      toast.success("Document uploaded successfully!");
+
+      // We'll add document refresh later
+
+    } catch {
+
+      toast.error("Upload failed.");
+
+    }
+
+  };
+
+  
+
+  
 
   return (
     <div className="flex h-screen bg-neutral-900 text-white">
@@ -49,14 +101,14 @@ const Home = () => {
         createSession={createSession}
         selectSession={handleSelectSession}
       />
-
-      <ChatWindow
-        messages={messages}
-        loading={loading}
-        sendMessage={handleSendMessage}
-        stopGeneration={stopGeneration}
-      />
-
+    
+        <ChatWindow
+              messages={messages}
+              loading={loading}
+              sendMessage={handleSendMessage}
+              stopGeneration={stopGeneration}
+            />
+            
     </div>
   );
 };

@@ -1,7 +1,31 @@
-import Home from "./pages/Home";
+import {
+  Routes,
+  Route,
+} from "react-router-dom";
 
-function App() {
-  return <Home />;
-}
+import Home from "./pages/Home";
+import Documents from "./pages/Documents";
+
+const App = () => {
+
+  return (
+
+    <Routes>
+
+      <Route
+        path="/"
+        element={<Home />}
+      />
+
+      <Route
+        path="/documents"
+        element={<Documents />}
+      />
+
+    </Routes>
+
+  );
+
+};
 
 export default App;
