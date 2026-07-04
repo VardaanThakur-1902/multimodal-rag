@@ -1,5 +1,6 @@
-from fastapi import APIRouter
-from fastapi import Depends
+import json
+
+from fastapi import APIRouter, Depends
 from sqlmodel import Session
 
 from database.database import get_session
@@ -14,7 +15,23 @@ def get_messages(
     session: Session = Depends(get_session),
 ):
 
-    return MessageService.list(
+    messages = MessageService.list(
         session,
         session_id,
     )
+
+    return [
+        {
+            "id": message.id,
+            "session_id": message.session_id,
+            "role": message.role,
+            "content": message.content,
+            "sources": (
+                json.loads(message.sources)
+                if message.sources
+                else []
+            ),
+            "created_at": message.created_at,
+        }
+        for message in messages
+    ]

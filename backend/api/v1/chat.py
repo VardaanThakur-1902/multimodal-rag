@@ -36,5 +36,5 @@ async def chat_stream(
             session_id=request.session_id,
             session=session,
         ),
-        media_type="text/plain",
+        media_type="text/event-stream",
     )

@@ -1,3 +1,5 @@
+import json
+
 from sqlmodel import Session, select
 
 from database.chat_models import ChatMessage
@@ -11,12 +13,14 @@ class MessageService:
         session_id: str,
         role: str,
         content: str,
+        sources: str | None = None,
     ):
 
         message = ChatMessage(
             session_id=session_id,
             role=role,
             content=content,
+            sources=sources,
         )
 
         session.add(message)
@@ -57,7 +61,7 @@ class MessageService:
             session.delete(message)
 
         session.commit()
-    
+
     @staticmethod
     def recent_history(
         session: Session,
@@ -80,6 +84,11 @@ class MessageService:
             {
                 "role": message.role,
                 "content": message.content,
+                "sources": (
+                    json.loads(message.sources)
+                    if message.sources
+                    else []
+                ),
             }
             for message in messages
         ]
