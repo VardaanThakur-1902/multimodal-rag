@@ -7,12 +7,14 @@ import {
 } from "react-icons/fi";
 
 import { NavLink } from "react-router-dom";
+import { FiTrash2 } from "react-icons/fi";
 
 const Sidebar = ({
   sessions,
   currentSession,
   createSession,
   selectSession,
+  deleteSession,
 }) => {
 
   return (
@@ -108,23 +110,36 @@ const Sidebar = ({
 
         {sessions.map((session) => (
 
-          <button
+          <div
             key={session.id}
-            onClick={() => selectSession(session.id)}
-            className={`w-full flex items-center gap-3 rounded-xl px-4 py-3 mb-2 transition-all duration-200 ${
+            className={`group flex items-center justify-between rounded-xl px-4 py-3 mb-2 transition ${
               currentSession === session.id
-                ? "bg-blue-600/15 border border-blue-500"
+                ? "bg-neutral-800 border border-blue-500"
                 : "hover:bg-neutral-900"
             }`}
           >
 
-            <FiMessageSquare />
+            <button
+              onClick={() => selectSession(session.id)}
+              className="flex flex-1 items-center gap-3"
+            >
+              <FiMessageSquare />
+              <span className="truncate">
+                {session.title}
+              </span>
+            </button>
 
-            <span className="truncate">
-              {session.title}
-            </span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteSession(session.id);
+              }}
+              className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 transition"
+            >
+              <FiTrash2 size={16} />
+            </button>
 
-          </button>
+          </div>
 
         ))}
 

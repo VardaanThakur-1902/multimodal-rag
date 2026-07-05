@@ -1,21 +1,78 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
+import documentService from "../services/documentService";
+import toast from "react-hot-toast";
 import DocumentCard from "../components/DocumentCard";
+import DocumentPreview from "../components/DocumentPreview";
+import { useRef } from "react";
 
 const Documents = () => {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [previewDoc, setPreviewDoc] = useState(null);
+  const fileInputRef = useRef(null);
 
   const loadDocuments = async () => {
     try {
-      const res = await api.get("/api/v1/documents");
-      setDocuments(res.data);
+      const docs =
+          await documentService.getDocuments();
+
+      setDocuments(docs);
     } catch (err) {
       console.error("Failed to load documents:", err);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleUpload = async (e) => {
+
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    try {
+
+      await documentService.upload(file);
+
+      toast.success(
+        "Document uploaded successfully."
+      );
+
+      loadDocuments();
+
+    } catch {
+
+      toast.error(
+        "Upload failed."
+      );
+
+    }
+
+  };
+
+  const handleDelete = async (documentId) => {
+
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this document?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+
+      await documentService.delete(documentId);
+
+      toast.success("Document deleted.");
+
+      loadDocuments();
+
+    } catch {
+
+      toast.error("Delete failed.");
+
+    }
+
   };
 
   useEffect(() => {
@@ -32,9 +89,10 @@ const Documents = () => {
         </h1>
 
         <button
-          className="rounded-xl bg-blue-600 px-5 py-3 hover:bg-blue-700 transition"
+            onClick={() => fileInputRef.current?.click()}
+            className="rounded-xl bg-blue-600 px-5 py-3 hover:bg-blue-700 transition"
         >
-          + Upload
+            + Upload
         </button>
       </div>
 
@@ -76,21 +134,35 @@ const Documents = () => {
 
           {documents
             .filter((doc) =>
-              doc.name
-                ?.toLowerCase()
-                .includes(search.toLowerCase())
+                doc.original_name
+                    ?.toLowerCase()
+                    .includes(search.toLowerCase())
             )
             .map((doc) => (
               <DocumentCard
-                key={doc.id}
-                document={doc}
-                onDelete={() => {}}
+                  key={doc.id}
+                  document={doc}
+                  onDelete={handleDelete}
+                  onPreview={setPreviewDoc}
               />
             ))}
 
         </div>
 
       )}
+
+      <DocumentPreview
+          document={previewDoc}
+          open={!!previewDoc}
+          onClose={() => setPreviewDoc(null)}
+      />
+
+      <input
+          ref={fileInputRef}
+          type="file"
+          hidden
+          onChange={handleUpload}
+      />
 
     </div>
   );

@@ -4,17 +4,21 @@ class CitationService:
     def build(chunks):
 
         citations = []
-
         seen = set()
 
         for chunk in chunks:
 
             metadata = chunk.metadata
 
+            chunk_type = (
+                metadata.get("chunk_type")
+                or metadata.get("type")
+            )
+
             key = (
                 metadata.get("document_name"),
                 metadata.get("page"),
-                metadata.get("chunk_type"),
+                chunk_type,
             )
 
             if key in seen:
@@ -26,7 +30,7 @@ class CitationService:
                 {
                     "document": metadata.get("document_name"),
                     "page": metadata.get("page"),
-                    "type": metadata.get("chunk_type"),
+                    "type": chunk_type,
                     "image_path": metadata.get("image_path"),
                 }
             )

@@ -97,6 +97,16 @@ class RAGService:
             top_k,
         )
 
+        print("=" * 50)
+        print("Retrieved chunks:", len(retrieved_chunks))
+
+        for chunk in retrieved_chunks:
+            print(chunk.source)
+            print(chunk.metadata)
+            print(chunk.content[:100])
+
+        print("=" * 50)
+
         context = ContextBuilder.build(
             retrieved_chunks
         )
