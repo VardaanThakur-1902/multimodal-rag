@@ -47,4 +47,22 @@ class HybridSearch:
             top_k=top_k,
         )
 
+        vector_results = self.vector.search(
+            query,
+            top_k=20,
+        )
+
+        print("\n===== VECTOR RESULTS =====")
+        for r in vector_results:
+            print(r.source)
+
+        keyword_results = self.keyword.search(
+            query,
+            top_k=20,
+        )
+
+        print("\n===== BM25 RESULTS =====")
+        for r in keyword_results:
+            print(r.source)
+
         return reranked

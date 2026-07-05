@@ -6,6 +6,7 @@ from sqlmodel import select
 from config.settings import UPLOAD_DIR
 from database.models import Document
 from services.storage_service import StorageService
+from vectordb.chroma_manager import ChromaManager
 
 
 class DocumentService:
@@ -43,6 +44,13 @@ class DocumentService:
 
         if file_path.exists():
             file_path.unlink()
+
+        print("Original name:", document.original_name)
+        print("Stored name:", document.stored_name)
+
+        ChromaManager().delete_document(
+            document.stored_name
+        )
 
         session.delete(document)
         session.commit()

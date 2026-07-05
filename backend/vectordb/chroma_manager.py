@@ -52,6 +52,16 @@ class ChromaManager:
 
             metadatas.append(metadata)
 
+        from collections import Counter
+
+        counter = Counter()
+
+        for m in metadatas:
+            counter[m.get("document_name")] += 1
+
+        print("Document names being indexed:")
+        print(counter)
+
             
 
         self.collection.add(
@@ -60,6 +70,20 @@ class ChromaManager:
             embeddings=embeddings,
             metadatas=metadatas,
         )
+        from collections import Counter
+
+        docs = self.collection.get(include=["metadatas"])
+
+        counter = Counter(
+            meta.get("document_name", "UNKNOWN")
+            for meta in docs["metadatas"]
+        )
+
+        print("=" * 60)
+        print("Documents in Chroma:")
+        print(counter)
+        print("Total vectors:", self.collection.count())
+        print("=" * 60)
 
     def delete_chunks(
         self,
@@ -73,3 +97,45 @@ class ChromaManager:
     def count(self):
 
         return self.collection.count()
+    
+    def delete_document(
+        self,
+        document_name: str,
+    ):
+
+        from collections import Counter
+
+        print("=" * 60)
+        print("Deleting:", document_name)
+
+        # Check what exists BEFORE delete
+        docs = self.collection.get(include=["metadatas"])
+
+        counter = Counter(
+            meta.get("document_name", "UNKNOWN")
+            for meta in docs["metadatas"]
+        )
+
+        print("Before delete:")
+        print(counter)
+        print("Total:", self.collection.count())
+
+        # Delete
+        self.collection.delete(
+            where={
+                "document_name": document_name
+            }
+        )
+
+        # Check AFTER delete
+        docs = self.collection.get(include=["metadatas"])
+
+        counter = Counter(
+            meta.get("document_name", "UNKNOWN")
+            for meta in docs["metadatas"]
+        )
+
+        print("After delete:")
+        print(counter)
+        print("Total:", self.collection.count())
+        print("=" * 60)

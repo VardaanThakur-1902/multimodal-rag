@@ -6,6 +6,13 @@ from database.database import get_session
 from schemas.response import APIResponse
 from services.document_service import DocumentService
 
+from fastapi.responses import FileResponse
+from pathlib import Path
+
+from config.settings import UPLOAD_DIR
+from services.storage_service import StorageService
+from database.models import Document
+
 router = APIRouter()
 
 
@@ -22,6 +29,46 @@ def get_documents(
         success=True,
         message="Documents retrieved.",
         data=documents,
+    )
+
+@router.get("/{document_id}/preview")
+def preview_document(
+    document_id: str,
+    session: Session = Depends(get_session),
+):
+
+    document = session.get(
+        Document,
+        document_id,
+    )
+
+    if not document:
+        return APIResponse(
+            success=False,
+            message="Document not found.",
+        )
+
+    folder = StorageService.FOLDER_MAP[
+        document.file_type
+    ]
+
+    file_path = (
+        Path(UPLOAD_DIR)
+        / folder
+        / document.stored_name
+    )
+
+    if not file_path.exists():
+
+        return APIResponse(
+            success=False,
+            message="File not found.",
+        )
+
+    return FileResponse(
+        path=file_path,
+        media_type=document.mime_type,
+        filename=document.original_name,
     )
 
 

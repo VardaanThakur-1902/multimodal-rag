@@ -31,6 +31,10 @@ class VectorSearch:
             n_results=top_k,
         )
 
+        print("=" * 50)
+        print(results)
+        print("=" * 50)
+
         documents = results["documents"][0]
         metadatas = results["metadatas"][0]
         distances = results["distances"][0]

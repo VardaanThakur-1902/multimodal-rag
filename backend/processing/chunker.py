@@ -29,9 +29,13 @@ class Chunker:
                         content=page.text,
 
                         metadata={
-                            "page": page.page_number,
-                            "type": "text",
-                        }
+                                "document_name": document.metadata.get(
+                                    "source_file",
+                                    "Unknown",
+                                ),
+                                "page": page.page_number,
+                                "chunk_type": "text",
+                            }
                     )
 
                 )
@@ -56,8 +60,12 @@ class Chunker:
                     content=table.markdown,
 
                     metadata={
+                        "document_name": document.metadata.get(
+                            "source_file",
+                            "Unknown",
+                        ),
                         "page": table.page_number,
-                        "type": "table",
+                        "chunk_type": "table",
                         "rows": table.rows,
                         "columns": table.columns,
                     }

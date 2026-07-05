@@ -13,8 +13,14 @@ class PDFLoader(BaseLoader):
         self,
         file_path: str,
     ) -> ExtractedDocument:
+        
+        print("=" * 50)
+        print("PDFLoader.load() called")
+        print("File:", file_path)
+        print("=" * 50)
 
         pdf = fitz.open(file_path)
+        print("Number of pages:", len(pdf))
 
         pages = []
 
@@ -41,35 +47,31 @@ class PDFLoader(BaseLoader):
 
             page_data = PageData(
                 page_number=index + 1,
-
                 text=text,
-
                 has_text=len(text.strip()) > 0,
-
-                has_images=PageAnalyzer.has_images(
-                    page
-                ),
-
-                has_tables=(index + 1)
-                in table_pages,
-
+                has_images=PageAnalyzer.has_images(page),
+                has_tables=(index + 1) in table_pages,
                 is_scanned=PageAnalyzer.is_scanned(
                     text,
                     page,
                 ),
-
-                word_count=PageAnalyzer.word_count(
-                    text
-                ),
-
-                character_count=PageAnalyzer.character_count(
-                    text
-                ),
+                word_count=PageAnalyzer.word_count(text),
+                character_count=PageAnalyzer.character_count(text),
             )
 
             pages.append(page_data)
 
             full_text.append(text)
+
+            print(
+                f"Page {index + 1}: "
+                f"{len(text.strip())} characters | "
+                f"Has Text: {page_data.has_text} | "
+                f"Has Images: {page_data.has_images} | "
+                f"Scanned: {page_data.is_scanned}"
+            )
+
+        print("Total pages:", len(pages))
 
         # -----------------------------
         # Metadata

@@ -66,7 +66,18 @@ const ChatInput = ({
             }
             onKeyDown={handleKeyDown}
             placeholder="Message Multimodal RAG..."
-            className="flex-1 resize-none bg-transparent outline-none text-white placeholder:text-gray-500"
+            className={`
+              flex-1
+              resize-none
+              bg-transparent
+              outline-none
+              text-white
+              placeholder:text-gray-500
+              h-12
+              leading-12
+              overflow-hidden
+              ${input ? "text-left" : "text-center"}
+            `}
           />
 
           {/* Send / Stop */}

@@ -5,6 +5,7 @@ import useSessions from "../hooks/useSessions";
 import DropZone from "../components/DropZone";
 import toast from "react-hot-toast";
 import api from "../services/api";
+import sessionService from "../services/sessionService";
 
 const Home = () => {
   const {
@@ -21,6 +22,7 @@ const Home = () => {
       setCurrentSession,
       createSession,
       loadMessages,
+      loadSessions,
   } = useSessions();
 
   const handleSelectSession = async (
@@ -88,6 +90,35 @@ const Home = () => {
 
   };
 
+  const handleDeleteSession = async (sessionId) => {
+
+    if (!window.confirm("Delete this chat?"))
+      return;
+
+    try {
+
+      await sessionService.deleteSession(sessionId);
+
+      toast.success("Chat deleted.");
+
+      await loadSessions();
+
+      if (currentSession === sessionId) {
+
+        setMessages([]);
+
+        setCurrentSession(null);
+
+      }
+
+    } catch {
+
+      toast.error("Unable to delete chat.");
+
+    }
+
+  };
+
   
 
   
@@ -100,6 +131,7 @@ const Home = () => {
         currentSession={currentSession}
         createSession={createSession}
         selectSession={handleSelectSession}
+        deleteSession={handleDeleteSession}
       />
     
         <ChatWindow

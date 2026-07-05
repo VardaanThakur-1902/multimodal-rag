@@ -12,27 +12,33 @@ class OllamaEmbeddings:
     def embed(text: str):
 
         response = requests.post(
-            f"{OLLAMA_URL}/api/embeddings",
+            f"{OLLAMA_URL}/api/embed",
             json={
                 "model": EMBED_MODEL,
-                "prompt": text,
+                "input": text,
+            },
+            timeout=300,
+        )
+
+        print("Status:", response.status_code)
+        print("Response:", response.text)
+
+        response.raise_for_status()
+
+        return response.json()["embeddings"][0]
+
+    @staticmethod
+    def embed_batch(texts: list[str]):
+
+        response = requests.post(
+            f"{OLLAMA_URL}/api/embed",
+            json={
+                "model": EMBED_MODEL,
+                "input": texts,
             },
             timeout=300,
         )
 
         response.raise_for_status()
 
-        return response.json()["embedding"]
-
-    @staticmethod
-    def embed_batch(texts: list[str]):
-
-        embeddings = []
-
-        for text in texts:
-
-            embeddings.append(
-                OllamaEmbeddings.embed(text)
-            )
-
-        return embeddings
+        return response.json()["embeddings"]
