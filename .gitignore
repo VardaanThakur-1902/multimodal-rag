@@ -4,20 +4,31 @@ __pycache__/
 .venv/
 venv/
 
-# Conda
+# Environment
 .env
-.env.*
+
+# Database
 *.db
 
-# ChromaDB
+# Chroma
 chroma_db/
 
-# VS Code
-.vscode/
+# Uploaded files
+uploads/
 
-# Node
-node_modules/
-dist/
+# Extracted images
+images/extracted/
+
+# Logs
+*.log
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
 
 # OS
 .DS_Store

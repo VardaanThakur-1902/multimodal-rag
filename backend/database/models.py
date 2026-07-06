@@ -13,22 +13,35 @@ class Document(SQLModel, table=True):
         primary_key=True,
     )
 
+    session_id: str = Field(
+        foreign_key="session.id"
+    )
+
     original_name: str
-
     stored_name: str
-
     file_type: str
-
     mime_type: str
-
     size: int
 
     collection: str = "Default"
-
     status: str = "uploaded"
-
     processed: bool = False
 
     uploaded_at: datetime = Field(
         default_factory=datetime.utcnow
     )
+
+class Session(SQLModel, table=True):
+
+    id: str = Field(
+        default_factory=lambda: str(uuid4()),
+        primary_key=True,
+    )
+
+    name: str
+
+    created_at: datetime = Field(
+        default_factory=datetime.utcnow
+    )
+
+    

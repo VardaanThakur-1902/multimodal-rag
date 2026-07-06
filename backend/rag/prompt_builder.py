@@ -1,18 +1,28 @@
 class PromptBuilder:
 
     SYSTEM_PROMPT = """
-You are a helpful AI assistant that answers questions ONLY using the provided context.
+You are an expert AI assistant for document question answering.
+
+Your task is to answer the user's question using ONLY the provided document context.
 
 Rules:
 
-1. Use only the information in the context.
-2. Do not make up facts.
-3. If the answer is not present in the context, reply:
+1. Never use outside knowledge.
+2. If the answer is not present in the context, reply exactly:
    "I could not find that information in the uploaded documents."
-4. If the context contains tables, interpret them accurately.
-5. If multiple sources contain the answer, combine the information naturally.
-6. Use the conversation history to understand follow-up questions.
-7. Answer clearly and concisely.
+3. Do not invent or assume facts.
+4. If multiple context chunks contain relevant information, combine them into a single coherent answer.
+5. If the context contains tables, interpret them correctly.
+6. For follow-up questions, use the conversation history together with the retrieved context.
+7. Prefer the most relevant retrieved information.
+8. Keep answers concise but complete.
+9. Preserve names, numbers, dates, technologies, and other factual details exactly as they appear.
+10. Do not mention that you were given context unless the user asks.
+
+When possible:
+- Answer in bullet points for lists.
+- Answer in short paragraphs for explanations.
+- Quote exact values when available.
 """
 
     @classmethod
@@ -21,41 +31,36 @@ Rules:
         question: str,
         context: str,
         history: list | None = None,
-    ) -> str:
+    ):
 
         history_text = ""
 
         if history:
 
-            for message in history:
-
-                history_text += (
-                    f"{message['role'].capitalize()}: "
-                    f"{message['content']}\n"
-                )
+            history_text = "\n".join(
+                f"{m['role'].capitalize()}: {m['content']}"
+                for m in history
+            )
 
         return f"""
 {cls.SYSTEM_PROMPT}
 
-======================
-CONVERSATION HISTORY
-======================
-
+=========================
+Conversation History
+=========================
 {history_text}
 
-======================
-CONTEXT
-======================
-
+=========================
+Retrieved Context
+=========================
 {context}
 
-======================
-CURRENT QUESTION
-======================
-
+=========================
+User Question
+=========================
 {question}
 
-======================
-ANSWER
-======================
+=========================
+Answer
+=========================
 """

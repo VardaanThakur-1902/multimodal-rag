@@ -6,6 +6,7 @@ from schemas.extracted_document import ExtractedDocument
 from schemas.page import PageData
 from tables.pdf_tables import PDFTableExtractor
 from pathlib import Path
+from ocr.page_ocr import PageOCR
 
 class PDFLoader(BaseLoader):
 
@@ -45,18 +46,62 @@ class PDFLoader(BaseLoader):
 
             text = page.get_text("text")
 
+            print("=" * 60)
+            print(f"PAGE {index+1}")
+            print("Text length:", len(text.strip()))
+            print("First 200 chars:")
+            print(repr(text[:200]))
+            print("Images:", len(page.get_images(full=True)))
+            print("Drawings:", len(page.get_drawings()))
+            print("=" * 60)
+
+            if len(text.strip()) < 50:
+
+                print(f"Running OCR on page {index+1}")
+
+                ocr_text = PageOCR.extract(
+                    file_path,
+                    index + 1,
+                )
+
+                if len(ocr_text.strip()) > len(text.strip()):
+                    text = ocr_text
+
+            is_scanned = PageAnalyzer.is_scanned(
+                text,
+                page,
+            )
+
+            if is_scanned:
+
+                print(
+                    f"Running OCR on page {index + 1}"
+                )
+
+                ocr_text = PageOCR.extract(
+                    file_path,
+                    index + 1,
+                )
+
+                if ocr_text.strip():
+
+                    text = ocr_text
+
             page_data = PageData(
                 page_number=index + 1,
                 text=text,
                 has_text=len(text.strip()) > 0,
                 has_images=PageAnalyzer.has_images(page),
                 has_tables=(index + 1) in table_pages,
-                is_scanned=PageAnalyzer.is_scanned(
-                    text,
-                    page,
-                ),
+                is_scanned=is_scanned,
                 word_count=PageAnalyzer.word_count(text),
                 character_count=PageAnalyzer.character_count(text),
+            )
+
+            print(
+                f"Page {index + 1} | "
+                f"Scanned: {is_scanned} | "
+                f"Characters: {len(text)}"
             )
 
             pages.append(page_data)

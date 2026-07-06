@@ -5,7 +5,7 @@ from ocr.ocr_service import OCRService
 def main():
 
     images = ImageProcessor.extract(
-        "uploads/pdf/sample.pdf"
+        "uploads/pdf/52cd9318-6a49-4d4a-bf25-9842eb32980e.pdf"
     )
 
     print("=" * 80)

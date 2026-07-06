@@ -13,21 +13,24 @@ class HybridSearch:
 
         self.reranker = CrossEncoderReranker()
 
-    def build_keyword_index(
-        self,
-        chunks,
-    ):
-
-        self.keyword.build(chunks)
-
     def search(
         self,
         query: str,
+        session_id: str,
         top_k: int = 5,
     ):
+        
+        session_chunks = self.vector.get_session_chunks(
+            session_id
+        )
+
+        self.keyword.build(
+            session_chunks
+        )
 
         vector_results = self.vector.search(
-            query,
+            query=query,
+            session_id=session_id,
             top_k=20,
         )
 
@@ -41,14 +44,19 @@ class HybridSearch:
             keyword_results,
         )
 
+        print("Before reranker")
+
         reranked = self.reranker.rerank(
             query,
             fused,
             top_k=top_k,
         )
 
+        print("After reranker")
+
         vector_results = self.vector.search(
-            query,
+            query=query,
+            session_id=session_id,
             top_k=20,
         )
 

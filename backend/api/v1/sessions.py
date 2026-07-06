@@ -1,8 +1,8 @@
-from fastapi import APIRouter
-from fastapi import Depends
+from fastapi import APIRouter, Depends
 from sqlmodel import Session
 
 from database.database import get_session
+from schemas.session import SessionCreate
 from services.session_service import SessionService
 
 router = APIRouter()
@@ -10,45 +10,30 @@ router = APIRouter()
 
 @router.post("/")
 def create_session(
-    session: Session = Depends(get_session),
+    data: SessionCreate,
+    db: Session = Depends(get_session),
 ):
-
-    return SessionService.create(session)
+    return SessionService.create(
+        data.name,
+        db,
+    )
 
 
 @router.get("/")
-def list_sessions(
-    session: Session = Depends(get_session),
+def get_sessions(
+    db: Session = Depends(get_session),
 ):
-
-    return SessionService.list(session)
+    return SessionService.get_all(
+        db,
+    )
 
 
 @router.delete("/{session_id}")
 def delete_session(
     session_id: str,
-    session: Session = Depends(get_session),
+    db: Session = Depends(get_session),
 ):
-
-    SessionService.delete(
+    return SessionService.delete(
         session_id,
-        session,
-    )
-
-    return {
-        "message": "Session deleted."
-    }
-
-
-@router.patch("/{session_id}")
-def rename_session(
-    session_id: str,
-    title: str,
-    session: Session = Depends(get_session),
-):
-
-    return SessionService.rename(
-        session_id,
-        title,
-        session,
+        db,
     )

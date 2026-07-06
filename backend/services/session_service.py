@@ -1,78 +1,51 @@
-from sqlmodel import Session, select
+from sqlmodel import Session
+from sqlmodel import select
 
-from database.chat_models import ChatSession
-from services.message_service import MessageService
+from database.models import Session as DBSession
 
 
 class SessionService:
 
     @staticmethod
     def create(
-        session: Session,
+        name: str,
+        db: Session,
     ):
 
-        chat = ChatSession()
+        session = DBSession(
+            name=name,
+        )
 
-        session.add(chat)
+        db.add(session)
+        db.commit()
+        db.refresh(session)
 
-        session.commit()
-
-        session.refresh(chat)
-
-        return chat
+        return session
 
     @staticmethod
-    def list(
-        session: Session,
+    def get_all(
+        db: Session,
     ):
 
-        return session.exec(
-            select(ChatSession)
+        return db.exec(
+            select(DBSession)
         ).all()
 
     @staticmethod
     def delete(
         session_id: str,
-        session: Session,
+        db: Session,
     ):
 
-        MessageService.delete_all(
-            session,
+        session = db.get(
+            DBSession,
             session_id,
         )
 
-        chat = session.get(
-            ChatSession,
-            session_id,
-        )
+        if not session:
+            return None
 
-        if chat:
+        db.delete(session)
+        db.commit()
 
-            session.delete(chat)
-
-            session.commit()
-
-    @staticmethod
-    def rename(
-        session_id: str,
-        title: str,
-        session: Session,
-    ):
-
-        chat = session.get(
-            ChatSession,
-            session_id,
-        )
-
-        if chat:
-
-            chat.title = title
-
-            session.add(chat)
-
-            session.commit()
-
-            session.refresh(chat)
-
-        return chat
-    
+        return session

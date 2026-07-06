@@ -8,13 +8,19 @@ from processing.image_processor import ImageProcessor
 class ProcessingPipeline:
 
     @staticmethod
-    def process(document):
+    def process(
+        document,
+        session_id: str,
+    ):
 
         # Clean pages
         for page in document.pages:
             page.text = TextCleaner.clean(page.text)
 
-        text_chunks = Chunker.chunk(document)
+        text_chunks = Chunker.chunk(
+            document,
+            session_id,
+        )
         print("Text chunks:", len(text_chunks))
 
         images = ImageProcessor.extract(document.file_path)
@@ -26,7 +32,10 @@ class ProcessingPipeline:
         ]
         print("Captions:", len(captions))
 
-        image_chunks = ImageChunkBuilder.build(captions)
+        image_chunks = ImageChunkBuilder.build(
+            captions,
+            session_id,
+        )
         print("Image chunks:", len(image_chunks))
 
         print("Total:", len(text_chunks + image_chunks))

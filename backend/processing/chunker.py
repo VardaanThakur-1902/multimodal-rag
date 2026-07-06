@@ -1,10 +1,14 @@
 from schemas.chunk import Chunk
+from processing.text_splitter import TextSplitter
 
 
 class Chunker:
 
     @staticmethod
-    def chunk(document):
+    def chunk(
+        document,
+        session_id,
+    ):
 
         chunks = []
 
@@ -12,7 +16,14 @@ class Chunker:
 
         for page in document.pages:
 
-            if page.text.strip():
+            if not page.text.strip():
+                continue
+
+            text_chunks = TextSplitter.split(
+                page.text
+            )
+
+            for chunk_text in text_chunks:
 
                 chunks.append(
 
@@ -21,21 +32,18 @@ class Chunker:
                             "source_file",
                             "Unknown"
                         ),
-
                         page_number=page.page_number,
-
                         chunk_type="text",
-
-                        content=page.text,
-
+                        content=chunk_text,
                         metadata={
-                                "document_name": document.metadata.get(
-                                    "source_file",
-                                    "Unknown",
-                                ),
-                                "page": page.page_number,
-                                "chunk_type": "text",
-                            }
+                            "page": page.page_number,
+                            "chunk_type": "text",
+                            "session_id": session_id,
+                            "document_name": document.metadata.get(
+                                "source_file",
+                                "Unknown"
+                            ),
+                        },
                     )
 
                 )
@@ -68,6 +76,7 @@ class Chunker:
                         "chunk_type": "table",
                         "rows": table.rows,
                         "columns": table.columns,
+                        "session_id": session_id,
                     }
                 )
 
