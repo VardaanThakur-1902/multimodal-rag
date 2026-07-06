@@ -6,7 +6,7 @@ class ImageChunkBuilder:
 
     @staticmethod
     def build(
-        captions: list[ImageCaption],
+        captions: list[ImageCaption],session_id,
     ) -> list[ImageChunk]:
 
         chunks = []
@@ -35,10 +35,16 @@ class ImageChunkBuilder:
 
                         "image_path": caption.image_path,
 
+                        "session_id": session_id,
+
                     },
 
                 )
-
             )
+            print("=" * 50)
+            print("IMAGE CHUNK CREATED")
+            print("Caption:")
+            print(caption.caption)
+            print("=" * 50)
 
         return chunks

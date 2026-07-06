@@ -23,11 +23,13 @@ class HybridSearch:
     def search(
         self,
         query: str,
+        session_id: str,
         top_k: int = 5,
     ):
 
         vector_results = self.vector.search(
-            query,
+            query=query,
+            session_id=session_id,
             top_k=20,
         )
 
@@ -41,14 +43,19 @@ class HybridSearch:
             keyword_results,
         )
 
+        print("Before reranker")
+
         reranked = self.reranker.rerank(
             query,
             fused,
             top_k=top_k,
         )
 
+        print("After reranker")
+
         vector_results = self.vector.search(
-            query,
+            query=query,
+            session_id=session_id,
             top_k=20,
         )
 

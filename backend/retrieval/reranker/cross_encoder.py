@@ -42,4 +42,12 @@ class CrossEncoderReranker:
 
             reranked.append(chunk)
 
+        print("\n========== RERANKED RESULTS ==========")
+
+        for result in reranked[:top_k]:
+            print("Type:", result.metadata.get("chunk_type"))
+            print("Page:", result.metadata.get("page"))
+            print(result.content[:150])
+            print("----------------------------------")
+
         return reranked

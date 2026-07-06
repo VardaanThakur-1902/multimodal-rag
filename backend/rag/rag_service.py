@@ -33,7 +33,8 @@ class RAGService:
 
         retrieved_chunks = self.retriever.retrieve(
             rewritten_question,
-            top_k,
+            session_id=session_id,
+            top_k=top_k,
         )
 
         context = ContextBuilder.build(

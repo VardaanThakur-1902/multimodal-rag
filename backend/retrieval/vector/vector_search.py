@@ -17,6 +17,7 @@ class VectorSearch:
     def search(
         self,
         query: str,
+        session_id: str,
         top_k: int = 5,
     ) -> list[RetrievalResult]:
 
@@ -29,6 +30,9 @@ class VectorSearch:
         results = self.collection.query(
             query_embeddings=[embedding],
             n_results=top_k,
+            where={
+                "session_id": session_id
+            }
         )
 
         print("=" * 50)
@@ -68,5 +72,13 @@ class VectorSearch:
                 )
 
             )
+
+            print("\n========== VECTOR SEARCH ==========")
+
+            for result in output:
+                print("Type:", result.metadata.get("chunk_type"))
+                print("Page:", result.metadata.get("page"))
+                print(result.content[:200])
+                print("----------------------------------")
 
         return output

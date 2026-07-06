@@ -42,11 +42,20 @@ class ChromaManager:
 
             documents.append(text)
 
+            
+
             embeddings.append(
                 EmbeddingService.generate(text)
             )
 
             metadata = dict(chunk.metadata)
+
+            print("=" * 50)
+            print("Adding to Chroma")
+            print("Type:", metadata.get("chunk_type"))
+            print("Text:")
+            print(text)
+            print("=" * 50)
 
             metadata["chunk_id"] = chunk.chunk_id
 
@@ -84,6 +93,7 @@ class ChromaManager:
         print(counter)
         print("Total vectors:", self.collection.count())
         print("=" * 60)
+        print(metadata)
 
     def delete_chunks(
         self,

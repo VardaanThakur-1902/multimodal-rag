@@ -1,25 +1,35 @@
 # Python
 __pycache__/
-*.py[cod]
-
-# Virtual Environment
-venv/
+*.pyc
 .venv/
+venv/
 
-# Environment Variables
+# Environment
 .env
 
-# ChromaDB
+# Database
+*.db
+
+# Chroma
 chroma_db/
 
-# Uploads
+# Uploaded files
 uploads/
 
-# VS Code
-.vscode/
-
-# Pytest
-.pytest_cache/
+# Extracted images
+images/extracted/
 
 # Logs
 *.log
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

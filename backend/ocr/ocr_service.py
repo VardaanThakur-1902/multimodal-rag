@@ -1,5 +1,4 @@
 import pytesseract
-
 from PIL import Image
 
 
@@ -10,9 +9,6 @@ class OCRService:
 
         image = Image.open(image_path)
 
-        text = pytesseract.image_to_string(
-            image,
-            lang="eng",
-        )
+        text = pytesseract.image_to_string(image)
 
         return text.strip()

@@ -7,6 +7,7 @@ from sqlmodel import Session
 from database.database import get_session
 from schemas.response import APIResponse
 from services.upload_service import UploadService
+from fastapi import Form
 
 router = APIRouter()
 
@@ -14,12 +15,15 @@ router = APIRouter()
 @router.post("/")
 async def upload_document(
     file: UploadFile = File(...),
+    session_id: str = Form(...),
     session: Session = Depends(get_session),
 ):
 
     document = await UploadService.upload(
         file,
+        session_id,
         session,
+        
     )
 
     return APIResponse(
@@ -27,3 +31,4 @@ async def upload_document(
         message="Upload successful.",
         data=document,
     )
+
