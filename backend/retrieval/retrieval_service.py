@@ -7,13 +7,6 @@ class RetrievalService:
 
         self.hybrid = HybridSearch()
 
-    def build_index(
-        self,
-        chunks,
-    ):
-
-        self.hybrid.build_keyword_index(chunks)
-
     def retrieve(
         self,
         question: str,

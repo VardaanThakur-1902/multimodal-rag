@@ -149,3 +149,14 @@ class ChromaManager:
         print(counter)
         print("Total:", self.collection.count())
         print("=" * 60)
+
+def get_chunks_by_session(
+    self,
+    session_id: str,
+):
+
+    return self.collection.get(
+        where={
+            "session_id": session_id
+        }
+    )

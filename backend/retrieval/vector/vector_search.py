@@ -1,5 +1,6 @@
 from schemas.retrieval_result import RetrievalResult
 from vectordb.collection_manager import CollectionManager
+from schemas.chunk import Chunk
 
 from embeddings.embedding_service import (
     EmbeddingService,
@@ -82,3 +83,47 @@ class VectorSearch:
                 print("----------------------------------")
 
         return output
+    
+    def get_session_chunks(
+        self,
+        session_id: str,
+    ) -> list[Chunk]:
+
+        results = self.collection.get(
+            where={
+                "session_id": session_id
+            }
+        )
+
+        chunks = []
+
+        for document, metadata in zip(
+            results["documents"],
+            results["metadatas"],
+        ):
+
+            chunks.append(
+                Chunk(
+                    chunk_id=metadata["chunk_id"],
+                    document_name=metadata["document_name"],
+                    page_number=metadata["page"],
+                    chunk_type=metadata["chunk_type"],
+                    content=document,
+                    metadata=metadata,
+                )
+            )
+
+            print("=" * 60)
+            print("Building BM25 for Session:", session_id)
+            print("Chunks loaded:", len(chunks))
+
+            documents = {
+                chunk.document_name
+                for chunk in chunks
+            }
+
+            print("Documents in BM25:")
+            print(documents)
+            print("=" * 60)
+
+        return chunks
