@@ -12,26 +12,23 @@ const documentService = {
 
   },
 
-  async upload(file, sessionId) {
+  async upload(file) {
 
-    const formData = new FormData();
+      const formData = new FormData();
 
-    formData.append(
-      "file",
-      file
-    );
+      formData.append("file", file);
 
-    const res = await api.post(
-      "/upload",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+      const res = await api.post(
+          "/upload",
+          formData,
+          {
+              headers: {
+                  "Content-Type": "multipart/form-data",
+              },
+          }
+      );
 
-    return res.data;
+      return res.data;
 
   },
 

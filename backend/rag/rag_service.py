@@ -26,14 +26,37 @@ class RAGService:
             session_id,
         )
 
+        from services.session_document_service import (
+            SessionDocumentService,
+        )
+
+        document_ids = SessionDocumentService.get_document_ids(
+            session=session,
+            session_id=session_id,
+        )
+
+        print("=" * 60)
+        print("DOCUMENT IDS")
+        print(document_ids)
+        print("=" * 60)
+
         rewritten_question = QueryRewriter.rewrite(
             question,
             history,
         )
 
-        retrieved_chunks = self.retriever.retrieve(
-            rewritten_question,
+        from services.session_document_service import SessionDocumentService
+
+        document_ids = SessionDocumentService.get_document_ids(
+            session=session,
             session_id=session_id,
+        )
+
+        print(document_ids)
+
+        retrieved_chunks = self.retriever.retrieve(
+            question=rewritten_question,
+            document_ids=document_ids,
             top_k=top_k,
         )
 
@@ -93,9 +116,24 @@ class RAGService:
             history,
         )
 
+        from services.session_document_service import (
+            SessionDocumentService,
+        )
+
+        document_ids = SessionDocumentService.get_document_ids(
+            session=session,
+            session_id=session_id,
+        )
+
+        print("=" * 60)
+        print("DOCUMENT IDS")
+        print(document_ids)
+        print("=" * 60)
+
         retrieved_chunks = self.retriever.retrieve(
-            rewritten_question,
-            top_k,
+            question=rewritten_question,
+            document_ids=document_ids,
+            top_k=top_k,
         )
 
         print("=" * 50)

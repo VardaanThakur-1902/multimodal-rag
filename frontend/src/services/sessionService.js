@@ -31,6 +31,31 @@ const sessionService = {
 
   },
 
+  async getSessionDocuments(
+      sessionId,
+  ) {
+
+      const res = await api.get(
+          `/sessions/${sessionId}/documents`
+      );
+
+      return res.data.data;
+
+  },
+
+  async removeDocument(
+      sessionId,
+      documentId,
+  ) {
+
+      const res = await api.delete(
+          `/sessions/${sessionId}/documents/${documentId}`
+      );
+
+      return res.data;
+
+  },
+
   async getSessions() {
 
     const res = await api.get(

@@ -52,6 +52,7 @@ class UploadService:
 
             chunks = ProcessingPipeline.process(
                 extracted_document,
+                document.id,
             )
 
             db = ChromaManager()

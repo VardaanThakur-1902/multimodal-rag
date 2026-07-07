@@ -10,6 +10,7 @@ class ProcessingPipeline:
     @staticmethod
     def process(
         document,
+        document_id: str,
     ):
 
         # Clean pages
@@ -18,6 +19,7 @@ class ProcessingPipeline:
 
         text_chunks = Chunker.chunk(
             document,
+            document_id,
         )
         print("Text chunks:", len(text_chunks))
 
@@ -32,6 +34,7 @@ class ProcessingPipeline:
 
         image_chunks = ImageChunkBuilder.build(
             captions,
+            document_id,
         )
         print("Image chunks:", len(image_chunks))
 

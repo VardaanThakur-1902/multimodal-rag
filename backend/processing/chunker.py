@@ -7,6 +7,7 @@ class Chunker:
     @staticmethod
     def chunk(
         document,
+        document_id: str,
         
     ):
 
@@ -36,6 +37,7 @@ class Chunker:
                         chunk_type="text",
                         content=chunk_text,
                         metadata={
+                            "document_id": document_id,
                             "page": page.page_number,
                             "chunk_type": "text",
                             "document_name": document.metadata.get(
@@ -67,6 +69,7 @@ class Chunker:
                     content=table.markdown,
 
                     metadata={
+                        "document_id": document_id,
                         "document_name": document.metadata.get(
                             "source_file",
                             "Unknown",
