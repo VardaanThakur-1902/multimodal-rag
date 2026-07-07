@@ -12,7 +12,7 @@ const documentService = {
 
   },
 
-  async upload(file) {
+  async upload(file, sessionId) {
 
     const formData = new FormData();
 

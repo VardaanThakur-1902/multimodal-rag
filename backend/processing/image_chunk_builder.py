@@ -6,7 +6,7 @@ class ImageChunkBuilder:
 
     @staticmethod
     def build(
-        captions: list[ImageCaption],session_id,
+        captions: list[ImageCaption],
     ) -> list[ImageChunk]:
 
         chunks = []
@@ -35,7 +35,6 @@ class ImageChunkBuilder:
 
                         "image_path": caption.image_path,
 
-                        "session_id": session_id,
 
                     },
 

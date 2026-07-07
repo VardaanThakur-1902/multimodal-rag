@@ -2,13 +2,32 @@ import api from "./api";
 
 const sessionService = {
 
-  async createSession() {
+  async createSession(name) {
 
-    const res = await api.post(
-      "/sessions"
-    );
+      const res = await api.post(
+          "/sessions/",
+          {
+              name,
+          }
+      );
 
-    return res.data;
+      return res.data;
+
+  },
+
+  async attachDocuments(
+      sessionId,
+      documentIds,
+  ) {
+
+      const res = await api.post(
+          `/sessions/${sessionId}/documents`,
+          {
+              document_ids: documentIds,
+          }
+      );
+
+      return res.data;
 
   },
 

@@ -13,10 +13,6 @@ class Document(SQLModel, table=True):
         primary_key=True,
     )
 
-    session_id: str = Field(
-        foreign_key="session.id"
-    )
-
     original_name: str
     stored_name: str
     file_type: str
