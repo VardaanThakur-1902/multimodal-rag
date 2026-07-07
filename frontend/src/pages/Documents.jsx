@@ -33,7 +33,10 @@ const Documents = () => {
 
     try {
 
-      await documentService.upload(file);
+      await documentService.upload(
+          file,
+          currentSession
+      );
 
       toast.success(
         "Document uploaded successfully."

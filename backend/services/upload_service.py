@@ -14,7 +14,6 @@ class UploadService:
     @staticmethod
     async def upload(
         file: UploadFile,
-        session_id: str,
         session: Session,
     ):
 
@@ -26,16 +25,13 @@ class UploadService:
         )
 
         document = Document(
-            session_id=session_id,
+            
             original_name=file.filename,
             stored_name=stored_name,
             file_type=extension,
             mime_type=file.content_type,
             size=file.size or 0,
         )
-
-        print(type(session))
-        print(type(session_id))
 
         session.add(document)
         session.commit()
@@ -56,7 +52,6 @@ class UploadService:
 
             chunks = ProcessingPipeline.process(
                 extracted_document,
-                session_id=document.session_id,
             )
 
             db = ChromaManager()

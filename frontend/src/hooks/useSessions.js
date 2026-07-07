@@ -19,59 +19,46 @@ const useSessions = () => {
 
   const loadSessions = async () => {
 
-    try {
-
-      const data =
-        await sessionService.getSessions();
-
-      setSessions(data);
-
-      if (
-        data.length > 0 &&
-        !currentSession
-      ) {
-
-        setCurrentSession(
-          data[0].id
-        );
-
-      }
-
-    } catch {
-
-      toast.error(
-        "Unable to load sessions."
-      );
-
-    }
-
-  };
-
-  const createSession =
-    async () => {
-
       try {
 
-        const session =
-          await sessionService.createSession();
+          const data =
+              await sessionService.getSessions();
 
-        setSessions(prev => [
-          session,
-          ...prev,
-        ]);
+          setSessions(data);
 
-        setCurrentSession(
-          session.id
-        );
+          if (data.length > 0) {
+
+              setCurrentSession(prev =>
+                  prev ?? data[0].id
+              );
+
+          }
 
       } catch {
 
-        toast.error(
-          "Unable to create session."
-        );
+          toast.error(
+              "Unable to load sessions."
+          );
 
       }
 
+  };
+
+  const createSession = async (
+        name,
+    ) => {
+
+        const session =
+            await sessionService.createSession(name);
+
+        setSessions(prev => [
+            session,
+            ...prev,
+        ]);
+
+        setCurrentSession(session.id);
+
+        return session;
     };
 
   const loadMessages = async (

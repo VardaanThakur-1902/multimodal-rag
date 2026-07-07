@@ -15,13 +15,11 @@ router = APIRouter()
 @router.post("/")
 async def upload_document(
     file: UploadFile = File(...),
-    session_id: str = Form(...),
     session: Session = Depends(get_session),
 ):
 
     document = await UploadService.upload(
         file,
-        session_id,
         session,
         
     )

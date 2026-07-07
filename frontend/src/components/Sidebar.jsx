@@ -8,6 +8,9 @@ import {
 
 import { NavLink } from "react-router-dom";
 import { FiTrash2 } from "react-icons/fi";
+import { useState } from "react";
+import CreateSessionModal from "./CreateSessionModal";
+import sessionService from "../services/sessionService";
 
 const Sidebar = ({
   sessions,
@@ -16,6 +19,8 @@ const Sidebar = ({
   selectSession,
   deleteSession,
 }) => {
+
+const [showCreateSession, setShowCreateSession] = useState(false);
 
   return (
 
@@ -54,7 +59,7 @@ const Sidebar = ({
       <div className="p-4">
 
         <button
-          onClick={createSession}
+          onClick={() => setShowCreateSession(true)}
           className="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 font-medium hover:bg-blue-700 transition"
         >
           <FiPlus />
@@ -125,7 +130,7 @@ const Sidebar = ({
             >
               <FiMessageSquare />
               <span className="truncate">
-                {session.title}
+                {session.name}
               </span>
             </button>
 
@@ -203,6 +208,45 @@ const Sidebar = ({
         </div>
 
       </div>
+
+      {
+        showCreateSession && (
+
+            <CreateSessionModal
+                onClose={() =>
+                    setShowCreateSession(false)
+                }
+
+                onCreate={async (
+                    name,
+                    documentIds,
+                ) => {
+
+                    try {
+
+                        const session =
+                            await createSession(name);
+
+                        await sessionService.attachDocuments(
+                            session.id,
+                            documentIds,
+                        );
+
+                        selectSession(session.id);
+
+                        setShowCreateSession(false);
+
+                    } catch (err) {
+
+                        console.error(err);
+
+                    }
+
+                }}
+            />
+
+        )
+    }
 
     </aside>
 
