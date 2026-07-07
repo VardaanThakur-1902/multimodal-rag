@@ -10,12 +10,12 @@ class RetrievalService:
     def retrieve(
         self,
         question: str,
-        session_id,
+        document_ids: list[str],
         top_k: int = 5,
     ):
 
         return self.hybrid.search(
             query=question,
-            session_id=session_id,
+            document_ids=document_ids,
             top_k=top_k,
         )

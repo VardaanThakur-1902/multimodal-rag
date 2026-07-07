@@ -45,3 +45,35 @@ class SessionDocumentService:
         )
 
         return session.exec(statement).all()
+
+    @staticmethod
+    def get_document_ids(
+        session: Session,
+        session_id: str,
+    ) -> list[str]:
+
+        statement = (
+            select(SessionDocument.document_id)
+            .where(
+                SessionDocument.session_id == session_id
+            )
+        )
+
+        return list(session.exec(statement).all())
+
+    @staticmethod
+    def remove_document(
+        session: Session,
+        session_id: str,
+        document_id: str,
+    ):
+
+        mapping = session.get(
+            SessionDocument,
+            (session_id, document_id),
+        )
+
+        if mapping:
+
+            session.delete(mapping)
+            session.commit()

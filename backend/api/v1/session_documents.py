@@ -47,3 +47,21 @@ def get_session_documents(
         message="Documents retrieved successfully.",
         data=documents,
     )
+
+@router.delete("/{session_id}/documents/{document_id}")
+def remove_document(
+    session_id: str,
+    document_id: str,
+    session: Session = Depends(get_session),
+):
+
+    SessionDocumentService.remove_document(
+        session=session,
+        session_id=session_id,
+        document_id=document_id,
+    )
+
+    return APIResponse(
+        success=True,
+        message="Document removed from session.",
+    )

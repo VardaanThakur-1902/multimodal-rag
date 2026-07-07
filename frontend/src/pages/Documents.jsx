@@ -35,7 +35,6 @@ const Documents = () => {
 
       await documentService.upload(
           file,
-          currentSession
       );
 
       toast.success(
@@ -44,7 +43,10 @@ const Documents = () => {
 
       loadDocuments();
 
-    } catch {
+    } catch (err) {
+
+      console.error(err);
+      console.error(err.response?.data);
 
       toast.error(
         "Upload failed."

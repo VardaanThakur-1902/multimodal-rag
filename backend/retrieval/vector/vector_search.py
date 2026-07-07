@@ -18,7 +18,7 @@ class VectorSearch:
     def search(
         self,
         query: str,
-        session_id: str,
+        document_ids: list[str],
         top_k: int = 5,
     ) -> list[RetrievalResult]:
 
@@ -32,7 +32,9 @@ class VectorSearch:
             query_embeddings=[embedding],
             n_results=top_k,
             where={
-                "session_id": session_id
+                "document_id": {
+                    "$in": document_ids
+                }
             }
         )
 
@@ -84,14 +86,16 @@ class VectorSearch:
 
         return output
     
-    def get_session_chunks(
+    def get_document_chunks(
         self,
-        session_id: str,
+        document_ids: list[str],
     ) -> list[Chunk]:
 
         results = self.collection.get(
             where={
-                "session_id": session_id
+                "document_id": {
+                    "$in": document_ids
+                }
             }
         )
 
@@ -114,7 +118,8 @@ class VectorSearch:
             )
 
             print("=" * 60)
-            print("Building BM25 for Session:", session_id)
+            print("Building BM25")
+            print("Document IDs:", document_ids)
             print("Chunks loaded:", len(chunks))
 
             documents = {

@@ -16,12 +16,12 @@ class HybridSearch:
     def search(
         self,
         query: str,
-        session_id: str,
+        document_ids: list[str],
         top_k: int = 5,
     ):
         
-        session_chunks = self.vector.get_session_chunks(
-            session_id
+        session_chunks = self.vector.get_document_chunks(
+            document_ids
         )
 
         self.keyword.build(
@@ -30,7 +30,7 @@ class HybridSearch:
 
         vector_results = self.vector.search(
             query=query,
-            session_id=session_id,
+            document_ids=document_ids,
             top_k=20,
         )
 
@@ -56,7 +56,7 @@ class HybridSearch:
 
         vector_results = self.vector.search(
             query=query,
-            session_id=session_id,
+            document_ids=document_ids,
             top_k=20,
         )
 

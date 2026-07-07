@@ -6,7 +6,7 @@ class ImageChunkBuilder:
 
     @staticmethod
     def build(
-        captions: list[ImageCaption],
+        captions: list[ImageCaption],document_id: str,
     ) -> list[ImageChunk]:
 
         chunks = []
@@ -26,6 +26,8 @@ class ImageChunkBuilder:
                     caption=caption.caption,
 
                     metadata={
+
+                        "document_id": document_id,
 
                         "document_name": caption.document_name,
 
