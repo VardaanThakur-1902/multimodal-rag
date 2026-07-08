@@ -193,7 +193,7 @@ const Home = () => {
   }, [currentSession]);
 
   return (
-    <div className="flex h-screen bg-neutral-900 text-white">
+    <div className="flex h-screen overflow-hidden bg-neutral-900 text-white">
 
       <Sidebar
         sessions={sessions}
@@ -203,7 +203,7 @@ const Home = () => {
         deleteSession={handleDeleteSession}
       />
 
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
         <SessionDocumentsBar
             documents={sessionDocuments}

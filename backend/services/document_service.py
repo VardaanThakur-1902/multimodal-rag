@@ -49,7 +49,7 @@ class DocumentService:
         print("Stored name:", document.stored_name)
 
         ChromaManager().delete_document(
-            document.stored_name
+            document.original_name
         )
 
         session.delete(document)
