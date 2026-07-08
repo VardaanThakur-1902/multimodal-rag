@@ -20,9 +20,9 @@ const ChatWindow = ({
   }, [messages, loading]);
 
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col flex-1 overflow-hidden">
 
-      <div className="flex-1 overflow-y-auto px-10 py-8 space-y-6">
+      <div className="flex-1 min-h-0 overflow-y-auto">
 
         {messages.length === 0 && (
           <div className="text-center pt-20">
@@ -108,7 +108,7 @@ const ChatWindow = ({
           />
         ))}
 
-        {loading && <Loader />}
+        {/*{loading && <Loader />}*/}
 
         <div ref={bottomRef}></div>
 

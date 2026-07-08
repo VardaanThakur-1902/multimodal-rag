@@ -8,6 +8,7 @@ class Chunker:
     def chunk(
         document,
         document_id: str,
+        document_name,
         
     ):
 
@@ -29,10 +30,7 @@ class Chunker:
                 chunks.append(
 
                     Chunk(
-                        document_name=document.metadata.get(
-                            "source_file",
-                            "Unknown"
-                        ),
+                        document_name=document_name,
                         page_number=page.page_number,
                         chunk_type="text",
                         content=chunk_text,
@@ -40,10 +38,8 @@ class Chunker:
                             "document_id": document_id,
                             "page": page.page_number,
                             "chunk_type": "text",
-                            "document_name": document.metadata.get(
-                                "source_file",
-                                "Unknown"
-                            ),
+                            "document_name": document_name,
+                            
                         },
                     )
 
@@ -57,10 +53,7 @@ class Chunker:
             chunks.append(
 
                 Chunk(
-                    document_name=document.metadata.get(
-                        "source_file",
-                        "Unknown"
-                    ),
+                    document_name=document_name,
 
                     page_number=table.page_number,
 
@@ -70,10 +63,7 @@ class Chunker:
 
                     metadata={
                         "document_id": document_id,
-                        "document_name": document.metadata.get(
-                            "source_file",
-                            "Unknown",
-                        ),
+                        "document_name": document_name,
                         "page": table.page_number,
                         "chunk_type": "table",
                         "rows": table.rows,

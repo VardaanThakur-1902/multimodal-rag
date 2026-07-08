@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FiSend, FiPaperclip } from "react-icons/fi";
+import { FiSend } from "react-icons/fi";
 
 const ChatInput = ({
   sendMessage,
@@ -45,16 +45,7 @@ const ChatInput = ({
         className="max-w-5xl mx-auto"
       >
 
-        <div className="flex items-end gap-3 rounded-2xl border border-neutral-700 bg-neutral-900 p-3 shadow-lg">
-
-          {/* Upload */}
-
-          <button
-            type="button"
-            className="rounded-xl p-3 hover:bg-neutral-800 transition"
-          >
-            <FiPaperclip size={18} />
-          </button>
+        <div className="flex items-center rounded-2xl border border-neutral-700 bg-neutral-900 p-3 shadow-lg">
 
           {/* Input */}
 
